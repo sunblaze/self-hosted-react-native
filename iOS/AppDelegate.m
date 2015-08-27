@@ -31,7 +31,7 @@
    * on the same Wi-Fi network.
    */
 
-  jsCodeLocation = [NSURL URLWithString:@"http://192.168.0.73:8081/index.ios.bundle"];
+  //jsCodeLocation = [NSURL URLWithString:@"http://localhost:8081/index.ios.bundle"];
 
   /**
    * OPTION 2
@@ -43,7 +43,11 @@
    * see http://facebook.github.io/react-native/docs/runningondevice.html
    */
 
-  jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+  //jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+
+  jsCodeLocation = [self reactJSBundleURL];
+
+  [self writeInitialReactJSBundle];
 
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"MyFirstApp"
@@ -55,6 +59,21 @@
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
   return YES;
+}
+
+- (NSURL *)applicationDocumentsDirectory {
+  return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+}
+
+- (NSURL *)reactJSBundleURL {
+  return [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"react.jsbundle"];
+}
+
+- (void)writeInitialReactJSBundle {
+  [[NSFileManager defaultManager] removeItemAtPath:[self reactJSBundleURL].path error:nil];
+  [[NSFileManager defaultManager] copyItemAtPath:[[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"].path
+          toPath:[self reactJSBundleURL].path
+          error:nil];
 }
 
 @end

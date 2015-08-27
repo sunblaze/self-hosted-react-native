@@ -6,35 +6,34 @@ var AppRegistry = React.AppRegistry;
 var StyleSheet = React.StyleSheet;
 var Text = React.Text;
 var View = React.View;
+var TextInput = React.TextInput;
+var TouchableHighlight = React.TouchableHighlight;
+
+var Spawner = require('react-native').NativeModules.Spawner;
+
 
 var MyFirstApp = React.createClass({
   displayName: 'MyFirstApp',
+  getInitialState: function() {
+    return {text: "Replace me"};
+  },
+  buttonClicked: function() {
+    Spawner.spawn(this.state.text);
+  },
+  codeChanged: function(text) {
+    this.setState({text: text});
+  },
   render:      function(){
     return (
       React.createElement(View, {style:styles.container},
-        React.createElement(Text, {style:styles.welcome}, 'Welcome to your doom!'),
-        React.createElement(Text, {style:styles.instructions}, 'To get started, edit index.ios.js'),
-        React.createElement(Text, {style:styles.instructions}, 'Press Cmd+R to reload,', '\n', 'Cmd+D or shake for dev menu')));
+        React.createElement(TextInput, {style:styles.welcome,
+                                        value: this.state.text,
+                                        multiline: true,
+                                        onChangeText: this.codeChanged.bind(this)}),
+        React.createElement(TouchableHighlight, {style:styles.button,
+                                                 onPress: this.buttonClicked.bind(this)},
+          React.createElement(Text, {}, 'Button!'))));
   }
-});
-
-var styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
 });
 
 var styles = StyleSheet.create({
@@ -45,14 +44,25 @@ var styles = StyleSheet.create({
     backgroundColor:'#F5FCFF'
   },
   welcome: {
-    fontSize:20,
-    textAlign:'center',
+    fontSize:16,
+    textAlign:'left',
+    height: 100,
+    borderColor: 'gray',
+    borderWidth: 1,
     margin:10
   },
   instructions: {
     textAlign:'center',
     color:'#333333',
     marginBottom:5
+  },
+  button: {
+    textAlign: 'center',
+    color: '#ffffff',
+    marginBottom: 7,
+    borderRadius: 2,
+    borderColor: '#0000ff',
+    borderWidth: 1
   }
 });
 
