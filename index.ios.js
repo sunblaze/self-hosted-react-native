@@ -29,10 +29,15 @@ var MyFirstApp = React.createClass({
         React.createElement(TextInput, {style:styles.welcome,
                                         value: this.state.text,
                                         multiline: true,
+                                        textAlign: 'end',
+                                        autoCorrect: false,
+                                        autoCapitalize: 'none',
                                         onChangeText: this.codeChanged.bind(this)}),
         React.createElement(TouchableHighlight, {style:styles.button,
-                                                 onPress: this.buttonClicked.bind(this)},
-          React.createElement(Text, {}, 'Button!'))));
+                                                 onPress: this.buttonClicked.bind(this),
+                                                 underlayColor: '#aabbee'},
+          React.createElement(Text, {style: styles.buttonText}, 'Reload')),
+        React.createElement(View, {style:styles.fill})));
   }
 });
 
@@ -44,12 +49,16 @@ var styles = StyleSheet.create({
     backgroundColor:'#F5FCFF'
   },
   welcome: {
+    flex:1,
+    fontFamily: 'Courier New',
     fontSize:16,
     textAlign:'left',
     height: 100,
     borderColor: 'gray',
     borderWidth: 1,
-    margin:10
+    margin:10,
+    marginTop: 20,
+    padding:5
   },
   instructions: {
     textAlign:'center',
@@ -57,12 +66,17 @@ var styles = StyleSheet.create({
     marginBottom:5
   },
   button: {
+    marginBottom: 7
+  },
+  buttonText: {
+    fontFamily: '.HelveticaNeueInterface-MediumP4',
+    fontSize: 17,
+    fontWeight: 'bold',
     textAlign: 'center',
-    color: '#ffffff',
-    marginBottom: 7,
-    borderRadius: 2,
-    borderColor: '#0000ff',
-    borderWidth: 1
+    color: '#007aff'
+  },
+  fill: {
+    height: 220
   }
 });
 
