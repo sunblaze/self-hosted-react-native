@@ -5,22 +5,36 @@
 
 @implementation Spawner
 
++ (NSURL *)applicationDocumentsDirectory {
+  return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+}
+
++ (NSURL *)reactJSBundleURL {
+  return [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"react.jsbundle"];
+}
+
++ (NSString *)reactJSBundlePath {
+  return [self reactJSBundleURL].path;
+}
+
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(spawn:(NSString *)code)
 {
   RCTLogInfo(@"Should spawn with the following code: %@", code);
 
-  // Duplicated from AppDelegate.m
-  NSURL *applicationDocumentsDirectory = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
-  NSURL *reactJSBundleURL = [applicationDocumentsDirectory URLByAppendingPathComponent:@"react.jsbundle"];
-
-  [[NSFileManager defaultManager] removeItemAtPath:reactJSBundleURL.path error:nil];
+  [[NSFileManager defaultManager] removeItemAtPath:[[self class] reactJSBundlePath] error:nil];
   [[NSFileManager defaultManager] copyItemAtPath:[[NSBundle mainBundle] URLForResource:@"main-alt" withExtension:@"jsbundle"].path
-          toPath:reactJSBundleURL.path
+          toPath:[[self class] reactJSBundlePath]
           error:nil];
 
   [self.bridge reload];
+}
+
+RCT_EXPORT_METHOD(curentSource:(RCTResponseSenderBlock)callback)
+{
+  NSString *source = [NSString stringWithContentsOfFile:[[self class] reactJSBundlePath] encoding:NSUTF8StringEncoding error:nil];
+  callback(@[[NSNull null], source]);
 }
 
 @synthesize bridge = _bridge;

@@ -15,13 +15,19 @@ var Spawner = require('react-native').NativeModules.Spawner;
 var MyFirstApp = React.createClass({
   displayName: 'MyFirstApp',
   getInitialState: function() {
-    return {text: "Replace me"};
+    return {text: "A"};
   },
   buttonClicked: function() {
     Spawner.spawn(this.state.text);
   },
   codeChanged: function(text) {
     this.setState({text: text});
+  },
+  componentWillMount: function() {
+    Spawner.curentSource(this.curentSource);
+  },
+  curentSource: function(error, source) {
+    this.setState({text: source});
   },
   render:      function(){
     return (
@@ -32,9 +38,9 @@ var MyFirstApp = React.createClass({
                                         textAlign: 'end',
                                         autoCorrect: false,
                                         autoCapitalize: 'none',
-                                        onChangeText: this.codeChanged.bind(this)}),
+                                        onChangeText: this.codeChanged}),
         React.createElement(TouchableHighlight, {style:styles.button,
-                                                 onPress: this.buttonClicked.bind(this),
+                                                 onPress: this.buttonClicked,
                                                  underlayColor: '#aabbee'},
           React.createElement(Text, {style: styles.buttonText}, 'Reload')),
         React.createElement(View, {style:styles.fill})));

@@ -10,6 +10,7 @@
 #import "AppDelegate.h"
 
 #import "RCTRootView.h"
+#import "Spawner.h"
 
 @implementation AppDelegate
 
@@ -31,7 +32,7 @@
    * on the same Wi-Fi network.
    */
 
-  //jsCodeLocation = [NSURL URLWithString:@"http://localhost:8081/index.ios.bundle"];
+  jsCodeLocation = [NSURL URLWithString:@"http://10.65.2.36:8081/index.ios.bundle"];
 
   /**
    * OPTION 2
@@ -45,7 +46,7 @@
 
   //jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 
-  jsCodeLocation = [self reactJSBundleURL];
+  //jsCodeLocation = [self reactJSBundleURL];
 
   [self writeInitialReactJSBundle];
 
@@ -61,18 +62,10 @@
   return YES;
 }
 
-- (NSURL *)applicationDocumentsDirectory {
-  return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
-}
-
-- (NSURL *)reactJSBundleURL {
-  return [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"react.jsbundle"];
-}
-
 - (void)writeInitialReactJSBundle {
-  [[NSFileManager defaultManager] removeItemAtPath:[self reactJSBundleURL].path error:nil];
+  [[NSFileManager defaultManager] removeItemAtPath:[Spawner reactJSBundleURL].path error:nil];
   [[NSFileManager defaultManager] copyItemAtPath:[[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"].path
-          toPath:[self reactJSBundleURL].path
+          toPath:[Spawner reactJSBundleURL].path
           error:nil];
 }
 
