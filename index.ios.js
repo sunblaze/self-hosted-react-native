@@ -1,6 +1,6 @@
 'use strict';
 
-var React=require('react-native/Libraries/react-native/react-native.js');
+var React = require('react-native/Libraries/react-native/react-native.js');
 
 var AppRegistry = React.AppRegistry;
 var StyleSheet = React.StyleSheet;
@@ -9,13 +9,13 @@ var View = React.View;
 var TextInput = React.TextInput;
 var TouchableHighlight = React.TouchableHighlight;
 
-var Spawner = require('react-native').NativeModules.Spawner;
+var Spawner = require('react-native/Libraries/react-native/react-native.js').NativeModules.Spawner;
 
 
 var MyFirstApp = React.createClass({
   displayName: 'MyFirstApp',
   getInitialState: function() {
-    return {text: "A"};
+    return {text: ""};
   },
   buttonClicked: function() {
     Spawner.spawn(this.state.text);

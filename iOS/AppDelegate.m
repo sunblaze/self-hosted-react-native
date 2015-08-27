@@ -32,7 +32,7 @@
    * on the same Wi-Fi network.
    */
 
-  jsCodeLocation = [NSURL URLWithString:@"http://10.65.2.36:8081/index.ios.bundle"];
+  //jsCodeLocation = [NSURL URLWithString:@"http://10.65.2.36:8081/index.ios.bundle"];
 
   /**
    * OPTION 2
@@ -46,7 +46,7 @@
 
   //jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 
-  //jsCodeLocation = [self reactJSBundleURL];
+  jsCodeLocation = [Spawner reactJSBundleURL];
 
   [self writeInitialReactJSBundle];
 

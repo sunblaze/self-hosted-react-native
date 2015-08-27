@@ -1412,7 +1412,7 @@ var Spawner=require('react-native/Libraries/react-native/react-native.js').Nativ
 var MyFirstApp=React.createClass({
 displayName:'MyFirstApp', 
 getInitialState:function(){
-return {text:'Replace me'};}, 
+return {text:''};}, 
 
 buttonClicked:function(){
 Spawner.spawn(this.state.text);}, 
@@ -1420,16 +1420,27 @@ Spawner.spawn(this.state.text);},
 codeChanged:function(text){
 this.setState({text:text});}, 
 
+componentWillMount:function(){
+Spawner.curentSource(this.curentSource);}, 
+
+curentSource:function(error, source){
+this.setState({text:source});}, 
+
 render:function(){
 return (
 React.createElement(View, {style:styles.container}, 
 React.createElement(TextInput, {style:styles.welcome, 
 value:this.state.text, 
 multiline:true, 
-onChangeText:this.codeChanged.bind(this)}), 
+textAlign:'end', 
+autoCorrect:false, 
+autoCapitalize:'none', 
+onChangeText:this.codeChanged}), 
 React.createElement(TouchableHighlight, {style:styles.button, 
-onPress:this.buttonClicked.bind(this)}, 
-React.createElement(Text, {}, 'Button!'))));}});
+onPress:this.buttonClicked, 
+underlayColor:'#aabbee'}, 
+React.createElement(Text, {style:styles.buttonText}, 'Reload')), 
+React.createElement(View, {style:styles.fill})));}});
 
 
 
@@ -1441,12 +1452,16 @@ alignItems:'center',
 backgroundColor:'#F5FCFF'}, 
 
 welcome:{
+flex:1, 
+fontFamily:'Courier New', 
 fontSize:16, 
 textAlign:'left', 
 height:100, 
 borderColor:'gray', 
 borderWidth:1, 
-margin:10}, 
+margin:10, 
+marginTop:20, 
+padding:5}, 
 
 instructions:{
 textAlign:'center', 
@@ -1454,12 +1469,17 @@ color:'#333333',
 marginBottom:5}, 
 
 button:{
+marginBottom:7}, 
+
+buttonText:{
+fontFamily:'.HelveticaNeueInterface-MediumP4', 
+fontSize:17, 
+fontWeight:'bold', 
 textAlign:'center', 
-color:'#ffffff', 
-marginBottom:7, 
-borderRadius:2, 
-borderColor:'#0000ff', 
-borderWidth:1}});
+color:'#007aff'}, 
+
+fill:{
+height:220}});
 
 
 
