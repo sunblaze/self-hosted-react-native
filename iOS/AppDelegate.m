@@ -63,7 +63,8 @@
 }
 
 - (void)writeInitialReactJSBundle {
-  [[NSFileManager defaultManager] removeItemAtPath:[Spawner reactJSBundleURL].path error:nil];
+  //[[NSFileManager defaultManager] removeItemAtPath:[Spawner reactJSBundleURL].path error:nil];
+
   [[NSFileManager defaultManager] copyItemAtPath:[[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"].path
           toPath:[Spawner reactJSBundleURL].path
           error:nil];
