@@ -38,17 +38,41 @@
   return [[self applicationDocumentsDirectory] URLByAppendingPathComponent:[self fileName:version]].path;
 }
 
-+ (void)revert {
-  NSInteger prevVersion = [self loadedVersion] - 1;
-  NSString *code = [NSString stringWithContentsOfFile:[self codeFilePath:prevVersion] encoding:NSUTF8StringEncoding error:nil];
+RCT_EXPORT_MODULE();
 
-  // Duplicate from below (class calls had to be removed though)
-  [[NSFileManager defaultManager] removeItemAtPath:[self reactJSBundlePath] error:nil];
+@synthesize bridge = _bridge;
 
-  NSString *template = [NSString stringWithContentsOfFile:[self templateJSBundlePath] encoding:NSUTF8StringEncoding error:nil];
+- (void) setBridge: (RCTBridge*)newBridge {
+  BOOL isNew = (_bridge != newBridge);
+  _bridge = newBridge;
+  if(isNew){
+    [self addRevertToReactDevMenu];
+  }
+}
+
+- (void)addRevertToReactDevMenu {
+  dispatch_block_t block = ^{
+    [self revert];
+    [self.bridge reload];
+  };
+
+  [self.bridge.devMenu addItem:@"Revert" handler:block];
+}
+
+- (void)replaceBundle: (NSString*) code {
+  [[NSFileManager defaultManager] removeItemAtPath:[[self class] reactJSBundlePath] error:nil];
+
+  NSString *template = [NSString stringWithContentsOfFile:[[self class] templateJSBundlePath] encoding:NSUTF8StringEncoding error:nil];
   template = [template stringByReplacingOccurrencesOfString:@"'self-hosted-react-native';" withString:code];
 
-  [template writeToFile:[self reactJSBundlePath] atomically:YES encoding:NSUTF8StringEncoding error:nil];
+  [template writeToFile:[[self class] reactJSBundlePath] atomically:YES encoding:NSUTF8StringEncoding error:nil];
+}
+
+- (void)revert {
+  NSInteger prevVersion = [[self class] loadedVersion] - 1;
+  NSString *code = [NSString stringWithContentsOfFile:[[self class] codeFilePath:prevVersion] encoding:NSUTF8StringEncoding error:nil];
+
+  [self replaceBundle:code];
 
   //Rollback version
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -56,33 +80,8 @@
   [defaults synchronize];
 }
 
-+ (void)addRevertToReactDevMenu:(RCTBridge*) bridge {
-  dispatch_block_t block = ^{
-    [self revert];
-    [bridge reload];
-  };
-
-  [bridge.devMenu addItem:@"Revert" handler:block];
-}
-
-RCT_EXPORT_MODULE();
-
-- (void) setBridge: (RCTBridge*)newBridge;
-{
-  if(_bridge != newBridge){
-    [[self class] addRevertToReactDevMenu:newBridge];
-  }
-  _bridge = newBridge;
-}
-
-RCT_EXPORT_METHOD(spawn:(NSString *)code)
-{
-  [[NSFileManager defaultManager] removeItemAtPath:[[self class] reactJSBundlePath] error:nil];
-
-  NSString *template = [NSString stringWithContentsOfFile:[[self class] templateJSBundlePath] encoding:NSUTF8StringEncoding error:nil];
-  template = [template stringByReplacingOccurrencesOfString:@"'self-hosted-react-native';" withString:code];
-
-  [template writeToFile:[[self class] reactJSBundlePath] atomically:YES encoding:NSUTF8StringEncoding error:nil];
+RCT_EXPORT_METHOD(spawn:(NSString *)code) {
+  [self replaceBundle:code];
 
   NSInteger newVersion = [[self class] loadedVersion] + 1;
 
@@ -101,8 +100,7 @@ RCT_EXPORT_METHOD(spawn:(NSString *)code)
   [self.bridge reload];
 }
 
-RCT_EXPORT_METHOD(curentSource:(RCTResponseSenderBlock)callback)
-{
+RCT_EXPORT_METHOD(curentSource:(RCTResponseSenderBlock)callback) {
   NSString *path = [[self class] indexIOSJSBundlePath];
   NSInteger version = [[self class] loadedVersion];
   NSInteger nextVersion = version + 1;
@@ -116,7 +114,5 @@ RCT_EXPORT_METHOD(curentSource:(RCTResponseSenderBlock)callback)
   NSString *source = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
   callback(@[[NSNull null], source]);
 }
-
-@synthesize bridge = _bridge;
 
 @end
